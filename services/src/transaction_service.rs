@@ -141,7 +141,7 @@ impl TransactionService {
             }
         };
         let signature = tx.signatures[0];
-
+        /* 
         let Some(BlockInformation {
             slot,
             last_valid_blockheight,
@@ -152,9 +152,27 @@ impl TransactionService {
         else {
             bail!("Blockhash not found in block store".to_string());
         };
-
+        
         if self.block_information_store.get_last_blockheight() > last_valid_blockheight {
             bail!("Blockhash is expired");
+        }
+        */
+
+        let slot;
+        let last_valid_blockheight;
+        let block_info = self
+        .block_information_store
+        .get_block_info(tx.get_recent_blockhash());
+        match block_info {
+            Some(a)=> {
+                slot = a.slot;
+                last_valid_blockheight = a.last_valid_blockheight;
+            }
+            None=> {
+                slot = 99999999999;
+                last_valid_blockheight = 9999999999999;
+            }
+
         }
 
         let prioritization_fee = {
